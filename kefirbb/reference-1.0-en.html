@@ -3,7 +3,7 @@
 <head>
     <meta content="text/html;charset=UTF-8"/>
 	<meta charset="UTF-8"/>
-    <title>KefirBB, руководство пользователя, версия 1.0</title>
+    <title>KefirBB, User Guide, version 1.0</title>
 	<link type="text/css" rel="stylesheet" href="../main.css">
 	<link type="text/css" rel="stylesheet" href="../shjs/css/sh_typical.min.css">
 	<script type="text/javascript" src="../shjs/sh_main.min.js"></script>
@@ -11,33 +11,31 @@
 	<script type="text/javascript" src="../shjs/lang/sh_xml.min.js"></script>
 </head>
 <body onload="sh_highlightDocument();">
-<h1>Руководство пользователя KefirBB</h1>
+<h1>KefirBB User Guide</h1>
 
-<p>Руководство пользователя KefirBB, версия 1.0, русский язык.</p>
+<p>KefirBB User Guide, version 1.0, english.</p>
 
-<h2>Введение</h2>
+<h2>About</h2>
 
 <p>
-    KefirBB &mdash; это Java-библиотека для преобразования текста между различными форматами.
-    Изначально KefirBB разрабатывалась для преобразования BB-кодов в HTML. Однако гибкие возможности
-    конфигурирования позволили использовать её и для других преобразований. Например для преобразования
-    XML в HTML или для фильтрации HTML-тэгов.
+    KefirBB is a Java library for texts transformation between deferences formats.
+    Initially it was developed for BB-to-HTML transalation. Really flexible configuration allows to
+    use it for others translations. For example for HTML filtration.
 </p>
 
-<h2>Новое в версии 1.0</h2>
+<h2>New in version 1.0</h2>
 
 <ul>
-	<li>Изменены названия пакетов на <code>org.kefirsf.bb</code>.</li>
-	<li>Добавлена возможность не учитывать регистр при создании кодов.</li>
-	<li>Значительно увеличена производительность.</li>
-	<li>Добалено ограничение на максимальную вложенность кодов для предотвращения <code>java.lang.StackOverflowError</code></li>
+	<li>Package name was changed to <code>org.kefirsf.bb</code>.</li>
+	<li>Ignore case in codes.</li>
+	<li>Better performance.</li>
+	<li>Prevent <code>java.lang.StackOverflowError</code>.</li>
 </ul>
 
-<h2>Начало работы</h2>
+<h2>Getting Started</h2>
 
 <p>
-	Для начала, Вам нужно подключить библиотеку <em>kefirbb</em> к вашему проекту. Для Maven-проектов достаточно
-	прописать зависимость.
+	You need add the library to your project. It's simple for Maven based projects.
 </p>
 
 <pre class="sh_xml">
@@ -49,12 +47,11 @@
 </pre>
 
 <p>
-	Для остальных проектов достаточно скачать <em>kefirbb-1.0.jar</em> и проследить, чтобы он был добавлен
-	в <em>classpath</em> приложения.
+	For others projects you must download <em>kefirbb-1.0.jar</em> and put it into <em>classpath</em>.
 </p>
 
 <p>
-	Преобразованием текста занимаются объекты, реализующие интерфейс <code>org.kefirsf.bb.TextProcessor</code>.
+	Classes implemented interface <code>org.kefirsf.bb.TextProcessor</code> make text translations.
 </p>
 
 <pre class="sh_java">
@@ -67,28 +64,25 @@ public interface TextProcessor {
 </pre>
 
 <p>
-	Как видно, интерфейс содержит несколько простых методов, которые получают на вход текст в объектах различных типов,
-	преобразовывают его, а затем возращают преобразованный текст в объекте того же типа.
+	The interface has some simple methods for text transalations.
 </p>
 <p>
-	Чтобы получить стандартный <code>TextProcessor</code> для преобразования BB-кодов в HTML, нужно воспользоваться
-	фабрикой <code>org.kefirsf.bb.BBProcessorFactory</code>.
+	For get standard <code>TextProcessor</code> you must use factory <code>org.kefirsf.bb.BBProcessorFactory</code>.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create();
 </pre>
 <p>
-    Теперь мы можем использовать его для преобразования нашего текста.
+	Now you can use it with your text.
 </p>
 <pre class="sh_java">
 assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("[b]text[/b]"));
 </pre>
 <p>
-    Объект <code>processor</code> является потокобезопасным. Это означает, что его можно использовать
-    в нескольких потоках одновременно.
+	Object <code>processor</code> is thread-safe.
 </p>
 
-<h2>Дополнительные возможности</h2>
+<h2>Futures</h2>
 <p>
 	Библиотека KefirBB имеет очень гибкую конфигурацию, которая позволяет использовать её не только для преобразования
 	BB-кодов в HTML, но и для других преобразований текста. Например, для фильтрации HTML, введенного пользователем или
@@ -96,17 +90,17 @@ assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("[b]text[/b]"));
 	преобразования текста.
 </p>
 
-<h3>Фильтрация HTML</h3>
+<h3>HTML Filtration</h3>
 <p>
 	В составе библиотеки KefirBB содержится конфигурация для фильтрации HTML. Фильтрацию HTML необходимо применять
-	над текстами, введенными пользователем, для предотвращения XSS-атак, а так же во избежание проблем с версткой.
+	над текстами, введенными пользователем, для предотвражения XSS-атак, а так же во избежание проблем с версткой.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("org/kefirsf/bb/safehtml.xml");
 assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("&lt;b onclick=\"alert('Attack!');\"&gt;text&lt;/b&gt;"));
 </pre>
 
-<h3>Исключение специальных последовательностей</h3>
+<h3>Escape special sequences</h3>
 <p>
 	Чато встает задача исключения специальных последовательностей символов из текста и замена их другими последовательностями.
 	Для этой цели, библиотека KefirBB содержит специальный класс <code>org.kefirsf.bb.EscapeProcessor</code>.
@@ -124,7 +118,7 @@ TextProcessor processor = new EscapeProcessor(
 assert "4bcd3fghijk1mn0pqrstuvwxyz".equals(processor.process("abcdefghijklmnopqrstuvwxyz"));
 </pre>
 
-<h3>Исключение специальных символов XML</h3>
+<h3>Escape XML</h3>
 <p>
 	Исключение специальных символов XML может понадобиться для вставки произвольного текста в XML или HTML
 	документ. Эта задач появлется достаточно регулярно, поэтому библиотека KefirBB содержит специальную фабрику,
@@ -136,7 +130,7 @@ TextProcessor processor = EscapeXmlProcessorFactory.getInstance().create();
 assert "&amp;lt;escape tag&amp;gt;".equals(processor.process("&lt;escape tag&gt;"));
 </pre>
 
-<h3>Конфигурация пользователя</h3>
+<h3>Custoim Configuration</h3>
 <p>
 	Программист может создать свою собственную конфигурацию процессора для своих специфических нужд.
 	Конфигурация может быть задана декларативно в XML файле или программно.
@@ -191,8 +185,8 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 	<code>org.kefirsf.bb.ConfigurationFactory</code>.
 </p>
 
-<h2>Конфигурация</h2>
-<h3>Декларативная конфигурация</h3>
+<h2>Configuration Guide</h2>
+<h3>XML Configuration</h3>
 <p>
     Файл конфигурации &mdash; это XML-файл описывающий преобразование текста. Постоянный адрес сехмы в Интернет
     <a href="http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd</a>.
@@ -229,7 +223,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 &lt;/configuration&gt;
 </pre>
 
-<h4>Коды</h4>
+<h4>Codes</h4>
 <p>
     Код &mdash; это основная единица преобразования текста. Именно код определяет какой фрагмент текста должен быть преобразован
     и как он должен быть преобразован.
@@ -308,7 +302,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
     или внутри тэга <code>scope</code>.
 </p>
 
-<h4>Область видимости</h4>
+<h4>Scopes</h4>
 <p>
     Область видимости определяет какие коды могут быть использованы для обработки фрагмента текста.
     По умолчанию используется область видимости с именем "ROOT". Даже если она не определена
@@ -339,7 +333,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 	</li>
 </ul>
 
-<h4>Параметры</h4>
+<h4>Parameters</h4>
 <p>
     Параметры &mdash; это заранее определенные переменные, которые могут быть использованы при генерации текста в кодах,
     префиксе и суффиксе. Параметры определяются внутри тэга <code>params</code> при помощи тэгов <code>param</code>,
@@ -373,7 +367,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 &lt;suffix&gt;&amp;lt;!-- bbcodes end --&amp;gt;&lt;/suffix&gt;
 </pre>
 
-<h3>Программная конфигурация</h3>
+<h3>Programmatic Configuration</h3>
 <p>
     Программная кофигурация задается классом <code>org.kefirsf.bb.conf.Configuration</code>. Пример:
 </p>
