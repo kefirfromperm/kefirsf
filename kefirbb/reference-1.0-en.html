@@ -18,7 +18,7 @@
 <h2>About</h2>
 
 <p>
-    KefirBB is a Java library for texts transformation between deferences formats.
+    KefirBB is a Java library for texts transformation between deferrent formats.
     Initially it was developed for BB-to-HTML transalation. Really flexible configuration allows to
     use it for others translations. For example for HTML filtration.
 </p>
@@ -84,16 +84,13 @@ assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("[b]text[/b]"));
 
 <h2>Futures</h2>
 <p>
-	Библиотека KefirBB имеет очень гибкую конфигурацию, которая позволяет использовать её не только для преобразования
-	BB-кодов в HTML, но и для других преобразований текста. Например, для фильтрации HTML, введенного пользователем или
-	для исключения специальных символов. Пользовтель, так же, может создать свою конфигурацию, практически для любого
-	преобразования текста.
+	KefirBB has very a flixible configuration which allows use it for different text translations.
+	For example for HTML filtration. User can create his own configuration.
 </p>
 
 <h3>HTML Filtration</h3>
 <p>
-	В составе библиотеки KefirBB содержится конфигурация для фильтрации HTML. Фильтрацию HTML необходимо применять
-	над текстами, введенными пользователем, для предотвражения XSS-атак, а так же во избежание проблем с версткой.
+	KefirBB contains configuration fo HTML filtration. It is necessary to prevent XSS-attacks on sites.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("org/kefirsf/bb/safehtml.xml");
@@ -102,9 +99,7 @@ assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("&lt;b onclick=\"alert
 
 <h3>Escape special sequences</h3>
 <p>
-	Чато встает задача исключения специальных последовательностей символов из текста и замена их другими последовательностями.
-	Для этой цели, библиотека KefirBB содержит специальный класс <code>org.kefirsf.bb.EscapeProcessor</code>.
-	Класс содержит конструктор, на вход которому подается массив, последовательностей для исключения и замены.
+	There is special processor class <code>org.kefirsf.bb.EscapeProcessor</code> for escaping special sequences from text.
 </p>
 <pre class="sh_java">
 TextProcessor processor = new EscapeProcessor(
@@ -120,59 +115,52 @@ assert "4bcd3fghijk1mn0pqrstuvwxyz".equals(processor.process("abcdefghijklmnopqr
 
 <h3>Escape XML</h3>
 <p>
-	Исключение специальных символов XML может понадобиться для вставки произвольного текста в XML или HTML
-	документ. Эта задач появлется достаточно регулярно, поэтому библиотека KefirBB содержит специальную фабрику,
-	которая строит объект <code>org.kefirsf.bb.EscapeProcessor</code>, сконфигурированный для исключения
-	специальных символов XML.
+	There is factory which create <code>org.kefirsf.bb.EscapeProcessor</code> for escaping special symbols of XML.
 </p>
 <pre class="sh_java">
 TextProcessor processor = EscapeXmlProcessorFactory.getInstance().create();
 assert "&amp;lt;escape tag&amp;gt;".equals(processor.process("&lt;escape tag&gt;"));
 </pre>
 
-<h3>Custoim Configuration</h3>
+<h3>Custom Configuration</h3>
 <p>
-	Программист может создать свою собственную конфигурацию процессора для своих специфических нужд.
-	Конфигурация может быть задана декларативно в XML файле или программно.
-	Существует несколько способов использовать свою конфигурацию.
+	A programmer can create a custom configuration. The configuration can be in defined in XML or defined programmatically.
+	There are some methods to use the custom configuration.
 </p>
 
 <p>
-	Первый способ &mdash; это назвать файл конфигурации <code>kefirbb.xml</code> и поместить его в корень в 
-	<code>classpath</code>. После чего, воспользоваться стандартной фабрикой.
+	Configuration file <em>kefirbb.xml</em> in root of <em>classpath</em>.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create();
 </pre>
 <p>
-	Фабрика сначала ищет конфигурацию по пути <code>classpath*:kefirbb.xml</code> и только если не находит, 
-	получает стандартную конфигурацию по пути <code>classpath*:org/kefirsf/bb/default.xml</code>.
-	Отдельные параметры конфигурации могут быть вынесены в файлы <code>kefirbb.properties</code> и 
-	<code>kefirbb.properties.xml</code>, имеющие стандартный синтаксис <code>Properties</code>.
+	The factory finds the configuration first in <em>classpath*:kefirbb.xml</em>. If not found
+	use defult configuration <em>classpath*:org/kefirsf/bb/default.xml</em>.
+	Some parameters can be set in <em>kefirbb.properties</em> or <em>kefirbb.properties.xml</em>
+	standard properties files.
 </p>
 
 <p>
-	Однако, первый способ не может удовлетворить все потребности. Иногда требуется использовать несколько конфигураций
-	или нет возможности разместить файл конфигурации в корне <code>classpath</code>. В этом случае можно использовать
-	загрузку конфигурации из ресурсов.
+	Condifguration from resource.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("my/package/config.xml");
 </pre>
 
 <p>
-	Можно получить конфигурацию из файла одни из двух способов.
+	Configuration from file.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create("config.xml");
 </pre>
-<p>или</p>
+<p>or</p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create(new File("config.xml"));
 </pre>
 
 <p>
-	Можно использовать конфигурацию, созданную программно.
+	Programmatic configuration.
 </p>
 <pre class="sh_java">
 Configuration configuration  = new Configuration();
@@ -181,19 +169,20 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 </pre>
 
 <p>
-	Программную конфигурацию можно получить из XML-конфигурации при помощи фабрики
+	Proprammer can get programmatic configuration from XMl with factory
 	<code>org.kefirsf.bb.ConfigurationFactory</code>.
 </p>
 
 <h2>Configuration Guide</h2>
 <h3>XML Configuration</h3>
 <p>
-    Файл конфигурации &mdash; это XML-файл описывающий преобразование текста. Постоянный адрес сехмы в Интернет
-    <a href="http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd</a>.
-    В качестве корневого должен быть использован тэг <code>configuration</code> без аттрибутов.
+	The configuration file is a XML file which defines the text transformation. There is a schema
+	<a href="http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd</a>.
+	The root tag is <code>configuration</code>. The tag <code>configuration</code> hasn't any attributes.
 </p>
 <p>
-    Пример простой конфигурации для процессора, фильтрующего спецсимволы XML:
+	The simple configuration example. This configuration define text transformation for escaping XML symbols
+	from text.
 </p>
 <pre class="sh_xml">
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
@@ -225,72 +214,68 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 
 <h4>Codes</h4>
 <p>
-    Код &mdash; это основная единица преобразования текста. Именно код определяет какой фрагмент текста должен быть преобразован
-    и как он должен быть преобразован.
+	Code is main entity. Code defines simple translation.
 </p>
 <p>
-    Код определяется при помощи тэга <code>code</code>. Внутри которого обязательны 2 тэга:
+	Code can be defined with tag <code>code</code>. The tag has two mandatory tags:
 </p>
 <ul>
-	<li><code>pattern</code> &mdash; образец по которому находится фрагмент текста, который должен быть обработан;</li>
-	<li><code>template</code> &mdash; шаблон для генерации нового текста.</li>
+	<li><code>pattern</code> &mdash; defines the text search pattern;</li>
+	<li><code>template</code> &mdash; the template for generate a new text fragment.</li>
 </ul>
 <p>
-    Так же у тэга <code>code</code> определены 2 аттрибута:
+    The tag <code>code</code> has two attributes:
 </p>
 <ul>
-	<li><code>name</code> &mdash; название кода;</li>
-	<li><code>priority</code> &mdash; приоритет кода (чем больше тем выше приоритет, по умолчанию "0").</li>
+	<li><code>name</code> &mdash; the name;</li>
+	<li><code>priority</code> &mdash; the priority (greater is higher, by default "0").</li>
 </ul>
     
 <p>
-    Тэг <code>pattern</code> может содержать текст и тэги: <code>var</code>, <code>constant</code>, <code>junk</code>.
-	Во время обработки, процессор ищет фрагменты текста соответствующие тексту и константам в тэге <code>pattern</code> кода.
-	Для тэга <code>pattern</code> можно так же указать атрибут <code>ignoreCase</code>, типа <code>boolean</code>.
-	Если значение атрибута <code>ignoreCase</code> "true", сравнение текста с образцом не будет зависеть от регистра.
+	The tag <code>pattern</code> can contains text and tags: <code>var</code>, <code>constant</code>, <code>junk</code>.
+	The text processor finds text framents corresponding the pattern.
+	Also there is an attribute <code>ignoreCase</code> for create pattern case insensitive.
 </p>
 
 <p>
-	Тэг <code>var</code> введен для определения переменных значений и имеет следующие атрибуты:
+	The tag <code>var</code> defines variables and has attributes:
 </p>
 <ul>
-    <li><code>name</code> &mdash; название переменной, по умолчанию "variable";</li>
+    <li><code>name</code> &mdash; the name of the variable, by default "variable";</li>
     <li>
-        <code>parse</code> &mdash; флаг указывающий на то, требуется ли обработка текста переменной,
-        по умолчанию "true";</li>
+        <code>parse</code> &mdash; use text processing for the variable,
+        by default "true";</li>
     <li>
-        <code>regex</code> &mdash; регулярное выражение, которому должна удовлетворять переменная,
-        используется только если <code>parse=false</code>;
+        <code>regex</code> &mdash; the regular expression,
+        only if <code>parse=false</code>;
     </li>
     <li>
-        <code>scope</code> &mdash; определяет область видимости, которая будет использована для обработки
-        текста переменной, используется только если <code>parse=true</code>, по умолчанию "ROOT";
+        <code>scope</code> &mdash; the scope of the variable, only if <code>parse=true</code>, by default "ROOT";
     </li>
     <li>
-        <code>inherit</code> &mdash; определяет что нужно унаследовать область видимости от внешнего кода,
-        по умолчанию "false";
+        <code>inherit</code> &mdash; inherit scope of the parent code, by default "false";
     </li>
     <li>
-        <code>transparent</code> &mdash; определяет что переменная должна быть видна внешнему коду,
-        по умолчанию "false", введен для обработки атрибутов.
+        <code>transparent</code> &mdash; if true, variable value will be accessible from others codes,
+        by default "false", it's needed for attributes of tags.
     </li>
 </ul>
 
 <p>
-	Тэг <code>constant</code> используется для обозначения константных значений в тэге <code>pattern</code>.
-	Имеет следующие атрибуты:
+	The tag <code>constant</code> defines constants in <code>pattern</code>.
+	It has attributes:
 </p>
 <ul>
-	<li><code>value</code> &mdash; значение константы;</li>
-	<li><code>ignoreCase</code> &mdash; указывает на необходимость игнорировать регистр символов.</li>
+	<li><code>value</code> &mdash; the constant value;</li>
+	<li><code>ignoreCase</code> &mdash; makes search of constant case insensitive.</li>
 </ul>
 
 <p>
-    Тэг <code>template</code> так же может содержать текст и тэг <code>var</code>, однако тэг
-    <code>var</code> может иметь только один атрибут <code>name</code>, по умолчанию "variable",
-    чтобы определить, значение какой именно переменной подставить в текст.
+	The tag <code>template</code> can contains text and tags <code>var</code>.
+	The tag <code>var</code> in the tag <code>template</code> has only one attribute
+	<code>name</code>. By default it is "variable".
 </p>
-<p>Пример тэга <code>code</code>:</p>
+<p>The example of tag <code>code</code>:</p>
 <pre class="sh_xml">
 &lt;code name="bold"&gt;
     &lt;pattern ignoreCase="true"&gt;[b]&lt;var inherit="true"/&gt;[/b]&lt;/pattern&gt;
@@ -298,8 +283,8 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 &lt;/code&gt;
 </pre>
 <p>
-    Тэг <code>code</code> может быть определен непосредственно внутри тэга <code>configuration</code>
-    или внутри тэга <code>scope</code>.
+	Tags <code>code</code> can be defined inside the tag <code>configuration</code>
+	on inside tags <code>scope</code>.
 </p>
 
 <h4>Scopes</h4>
@@ -357,7 +342,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
     <code>java.util.Properties</code>.
 </p>
 
-<h4>Префикс и суффикс</h4>
+<h4>Prefix and suffix</h4>
 <p>
     Префикс и суффикс добавляются в начале и конце обрабатываемого текста соответственно. Определяются при помощи тэгов
     <code>prefix</code> и <code>suffix</code>, аналогично тэгу <code>template</code>.
@@ -369,7 +354,8 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 
 <h3>Programmatic Configuration</h3>
 <p>
-    Программная кофигурация задается классом <code>org.kefirsf.bb.conf.Configuration</code>. Пример:
+	The programmatic configuration is defined by class <code>org.kefirsf.bb.conf.Configuration</code>.
+	For example:
 </p>
 <pre class="sh_java">
 // Create configuration

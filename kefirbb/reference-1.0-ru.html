@@ -144,22 +144,22 @@ assert "&amp;lt;escape tag&amp;gt;".equals(processor.process("&lt;escape tag&gt;
 </p>
 
 <p>
-	Первый способ &mdash; это назвать файл конфигурации <code>kefirbb.xml</code> и поместить его в корень в 
-	<code>classpath</code>. После чего, воспользоваться стандартной фабрикой.
+	Первый способ &mdash; это назвать файл конфигурации <em>kefirbb.xml</em> и поместить его в корень в 
+	<em>classpath</em>. После чего, воспользоваться стандартной фабрикой.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create();
 </pre>
 <p>
-	Фабрика сначала ищет конфигурацию по пути <code>classpath*:kefirbb.xml</code> и только если не находит, 
-	получает стандартную конфигурацию по пути <code>classpath*:org/kefirsf/bb/default.xml</code>.
-	Отдельные параметры конфигурации могут быть вынесены в файлы <code>kefirbb.properties</code> и 
-	<code>kefirbb.properties.xml</code>, имеющие стандартный синтаксис <code>Properties</code>.
+	Фабрика сначала ищет конфигурацию по пути <em>classpath*:kefirbb.xml</em> и только если не находит, 
+	получает стандартную конфигурацию по пути <em>classpath*:org/kefirsf/bb/default.xml</em>.
+	Отдельные параметры конфигурации могут быть вынесены в файлы <em>kefirbb.properties</em> и 
+	<em>kefirbb.properties.xml</em>, имеющие стандартный синтаксис <code>Properties</code>.
 </p>
 
 <p>
 	Однако, первый способ не может удовлетворить все потребности. Иногда требуется использовать несколько конфигураций
-	или нет возможности разместить файл конфигурации в корне <code>classpath</code>. В этом случае можно использовать
+	или нет возможности разместить файл конфигурации в корне <em>classpath</em>. В этом случае можно использовать
 	загрузку конфигурации из ресурсов.
 </p>
 <pre class="sh_java">
