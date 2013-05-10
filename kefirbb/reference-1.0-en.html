@@ -289,47 +289,43 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 
 <h4>Scopes</h4>
 <p>
-    Область видимости определяет какие коды могут быть использованы для обработки фрагмента текста.
-    По умолчанию используется область видимости с именем "ROOT". Даже если она не определена
-    в конфигурации то она все равно будет создана и в нее будут включены все коды определенные
-    в тэге <code>configuration</code> но не в тэгах <code>scope</code>. Это удобно &mdash; для
-    простых конфигурация с небольшим количеством кодов разработчик может вовсе не заботиться об областях видимости.
+	Scopes define which code will be used for text fragment processing.
+	By default there is one scope with name "ROOT". If root scope is not defined in configuration
+	it will be created and all codes from the tag <code>configuration</code> will be put in.
+	It is handy for simple configurations with one scope.
 </p>
 <p>
-    Область видимости определяется при помощи тэга <code>scope</code>, который может находиться внутри тэга
-    <code>configuration</code>. Для тэга <code>scope</code> определны следующие атрибуты:
+	A scope can be defined with the tag <code>scope</code> inside the tag <code>configuration</code>.
+	The tag <code>scope</code> has three attributes:
 </p>
 <ul>
-    <li><code>name</code> &mdash; название области видимости;</li>
-    <li><code>parent</code> &mdash; область видимости из которой будут унаследованы все коды;</li>
+    <li><code>name</code> &mdash; the name of the scope;</li>
+    <li><code>parent</code> &mdash; the parent scope, all codes from the parent scope will be put in the scope;</li>
     <li>
-        <code>ignoreText</code> &mdash; означает что при обработке текста в этой области видимости нужно
-        игнорировать весь текст, который не относится ни к одному из допустимых внутри этой области видимости кодов.
+        <code>ignoreText</code> &mdash; ignore text outside codes.
     </li>
 </ul>
 <p>
-    Внутри тэга <code>scope</code> допустимы тэги:
+    The tag <code>scope</code> can contains tags:
 </p>
 <ul>
-	<li><code>code</code> &mdash; для определения кода (см. выше);</li>
+	<li><code>code</code> &mdash; the code;</li>
 	<li>
-		<code>coderef</code> &mdash; для ссылки на код, определенный вне тэга <code>scope</code>. У тэга
-		<code>coderef</code> определен один атрибут <code>name</code>, который должен совпадать с именем кода.
+		<code>coderef</code> &mdash; reference to the code by name.
 	</li>
 </ul>
 
 <h4>Parameters</h4>
 <p>
-    Параметры &mdash; это заранее определенные переменные, которые могут быть использованы при генерации текста в кодах,
-    префиксе и суффиксе. Параметры определяются внутри тэга <code>params</code> при помощи тэгов <code>param</code>,
-    у которых есть 2 атрибута:
+	Parameters is a predefined variables. They can be defined in the section <code>params</code> with tags
+	<code>param</code>. The tag <code>param</code> has two attributes:
 </p>
 <ul>
-	<li><code>name</code> &mdash; название переменной;</li>
-	<li><code>value</code> &mdash; значение.</li>
+	<li><code>name</code> &mdash; the parameter name;</li>
+	<li><code>value</code> &mdash; the value.</li>
 </ul>
 <p>
-	Например:
+	For example:
 </p>
 <pre class="sh_xml">
 &lt;params&gt;
@@ -337,15 +333,14 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 &lt;/params&gt;
 </pre>
 <p>
-    Так же параметры могут быть заданы в отдельном файле <em>kefirbb.properties</em> или
-    <em>kefirbb.properties.xml</em> в <em>classpath</em>. Форматы файлов определены в классе
-    <code>java.util.Properties</code>.
+	Parameters can be set in files <em>kefirbb.properties</em> or <em>kefirbb.properties.xml</em>
+	in the root of <em>classpath</em>. This files has standard format defined in <code>java.util.Properties</code>.
 </p>
 
 <h4>Prefix and suffix</h4>
 <p>
-    Префикс и суффикс добавляются в начале и конце обрабатываемого текста соответственно. Определяются при помощи тэгов
-    <code>prefix</code> и <code>suffix</code>, аналогично тэгу <code>template</code>.
+	Preficx and suffix are add in begin and end of the transalted text.
+	Tags <code>prefix</code> and <code>suffix</code> like tag <code>template</code>.
 </p>
 <pre class="sh_xml">
 &lt;prefix&gt;&amp;lt;!-- bbcodes begin --&amp;gt;&lt;/prefix&gt;
