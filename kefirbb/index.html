@@ -3,8 +3,12 @@
 	<head>
 		<title>KefirBB</title>
 		<link href="../main.css" rel="stylesheet"/>
+		<link type="text/css" rel="stylesheet" href="../shjs/css/sh_typical.min.css">
+		<script type="text/javascript" src="../shjs/sh_main.min.js"></script>
+		<script type="text/javascript" src="../shjs/lang/sh_java.min.js"></script>
+		<script type="text/javascript" src="../shjs/lang/sh_xml.min.js"></script>
 	</head>
-	<body>
+	<body onload="sh_highlightDocument();">
 		<h1>KefirBB</h1>
 		<h2>About</h2>
 		<p>
@@ -13,6 +17,15 @@
 			This futures allows use KefirBB as any text processor you like. For example:
 			XML2XML, XML2HTML, XML2JSON, JSON2XML and other.
 		</p>
+		<h2>Maven</h2>
+<pre class="sh_xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.kefirsf&lt;/groupId&gt;
+    &lt;artifactId&gt;kefirbb&lt;/artifactId&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
 		<h2>Download</h2>
 		<ul>
 			<li><a href="../download/kefirbb-1.0.jar">kefirbb-1.0.jar</a> &mdash; the KefirBB;</li>
@@ -57,5 +70,5 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 		</ul>
 <hr/>
 <p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefir@perm.ru">kefir@perm.ru</a></p>
-	<body>
+	</body>
 </html>
