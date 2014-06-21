@@ -20,7 +20,7 @@
 <p>
     KefirBB &mdash; это Java-библиотека для преобразования текста между различными форматами.
     Изначально KefirBB разрабатывалась для преобразования BB-кодов в HTML. Однако гибкие возможности
-    конфигурирования позволили использовать её и для других преобразований. Например для преобразования
+    конфигурирования позволили использовать её и для других преобразований. Например, для преобразования
     XML в HTML или для фильтрации HTML-тэгов.
 </p>
 
@@ -108,9 +108,9 @@ assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("&lt;b onclick=\"alert
 
 <h3>Исключение специальных последовательностей</h3>
 <p>
-	Чато встает задача исключения специальных последовательностей символов из текста и замена их другими последовательностями.
+	Часто встает задача исключения специальных последовательностей символов из текста и замены их другими последовательностями.
 	Для этой цели, библиотека KefirBB содержит специальный класс <code>org.kefirsf.bb.EscapeProcessor</code>.
-	Класс содержит конструктор, на вход которому подается массив, последовательностей для исключения и замены.
+	Класс содержит конструктор, на вход которому подается массив последовательностей для исключения и замены.
 </p>
 <pre class="sh_java">
 TextProcessor processor = new EscapeProcessor(
@@ -167,7 +167,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("m
 </pre>
 
 <p>
-	Можно получить конфигурацию из файла одни из двух способов.
+	Можно получить конфигурацию из файла одним из двух способов.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create("config.xml");
@@ -194,7 +194,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 <h2>Конфигурация</h2>
 <h3>Декларативная конфигурация</h3>
 <p>
-    Файл конфигурации &mdash; это XML-файл описывающий преобразование текста. Постоянный адрес сехмы в Интернет
+    Файл конфигурации &mdash; это XML-файл описывающий преобразование текста. Постоянный адрес схемы в Интернет
     <a href="http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd</a>.
     В качестве корневого должен быть использован тэг <code>configuration</code> без аттрибутов.
 </p>
@@ -311,7 +311,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 <h4>Область видимости</h4>
 <p>
     Область видимости определяет какие коды могут быть использованы для обработки фрагмента текста.
-    По умолчанию используется область видимости с именем "ROOT". Даже если она не определена
+    По умолчанию, используется область видимости с именем "ROOT". Даже если она не определена
     в конфигурации то она все равно будет создана и в нее будут включены все коды определенные
     в тэге <code>configuration</code> но не в тэгах <code>scope</code>. Это удобно &mdash; для
     простых конфигурация с небольшим количеством кодов разработчик может вовсе не заботиться об областях видимости.
@@ -412,6 +412,6 @@ assert "[KefirBB]".equals(processor.process("val"));
 </pre>
 
 <hr/>
-<p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefir@perm.ru">kefir@perm.ru</a></p>
+<p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefirfromperm@gmail.com">kefirfromperm@gmail.com</a></p>
 </body>
 </html>

@@ -18,15 +18,15 @@
 <h2>About</h2>
 
 <p>
-    KefirBB is a Java library for texts transformation between deferrent formats.
-    Initially it was developed for BB-to-HTML transalation. Really flexible configuration allows to
+    KefirBB is a Java library for the texts transformation between deferrent formats.
+    Initially it was developed for BB-to-HTML transalation. The really flexible configuration allows to
     use it for others translations. For example for HTML filtration.
 </p>
 
 <h2>New in version 1.0</h2>
 
 <ul>
-	<li>Package name was changed to <code>org.kefirsf.bb</code>.</li>
+	<li>The package name was changed to <code>org.kefirsf.bb</code>.</li>
 	<li>Ignore case in codes.</li>
 	<li>Better performance.</li>
 	<li>Prevent <code>java.lang.StackOverflowError</code>.</li>
@@ -79,18 +79,18 @@ TextProcessor processor = BBProcessorFactory.getInstance().create();
 assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("[b]text[/b]"));
 </pre>
 <p>
-	Object <code>processor</code> is thread-safe.
+	The object <code>processor</code> is thread-safe.
 </p>
 
-<h2>Futures</h2>
+<h2>Features</h2>
 <p>
-	KefirBB has very a flixible configuration which allows use it for different text translations.
+	KefirBB has a very flixible configuration which allows use it for different text translations.
 	For example for HTML filtration. User can create his own configuration.
 </p>
 
 <h3>HTML Filtration</h3>
 <p>
-	KefirBB contains configuration fo HTML filtration. It is necessary to prevent XSS-attacks on sites.
+	KefirBB contains configuration for HTML filtration. It is necessary to prevent XSS-attacks on sites.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("org/kefirsf/bb/safehtml.xml");
@@ -99,7 +99,7 @@ assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("&lt;b onclick=\"alert
 
 <h3>Escape special sequences</h3>
 <p>
-	There is special processor class <code>org.kefirsf.bb.EscapeProcessor</code> for escaping special sequences from text.
+	There is a special processor class <code>org.kefirsf.bb.EscapeProcessor</code> for escaping special sequences from a text.
 </p>
 <pre class="sh_java">
 TextProcessor processor = new EscapeProcessor(
@@ -115,7 +115,7 @@ assert "4bcd3fghijk1mn0pqrstuvwxyz".equals(processor.process("abcdefghijklmnopqr
 
 <h3>Escape XML</h3>
 <p>
-	There is factory which create <code>org.kefirsf.bb.EscapeProcessor</code> for escaping special symbols of XML.
+	There is a factory which creates <code>org.kefirsf.bb.EscapeProcessor</code> for escaping special symbols of XML.
 </p>
 <pre class="sh_java">
 TextProcessor processor = EscapeXmlProcessorFactory.getInstance().create();
@@ -124,25 +124,25 @@ assert "&amp;lt;escape tag&amp;gt;".equals(processor.process("&lt;escape tag&gt;
 
 <h3>Custom Configuration</h3>
 <p>
-	A programmer can create a custom configuration. The configuration can be in defined in XML or defined programmatically.
+	A programmer can create a custom configuration. The configuration can be defined in XML or defined programmatically.
 	There are some methods to use the custom configuration.
 </p>
 
 <p>
-	Configuration file <em>kefirbb.xml</em> in root of <em>classpath</em>.
+	The configuration file <em>kefirbb.xml</em> in the root of <em>classpath</em>.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().create();
 </pre>
 <p>
-	The factory finds the configuration first in <em>classpath*:kefirbb.xml</em>. If not found
-	use defult configuration <em>classpath*:org/kefirsf/bb/default.xml</em>.
+	The factory finds the configuration in <em>classpath*:kefirbb.xml</em> first. If not found
+	uses default configuration <em>classpath*:org/kefirsf/bb/default.xml</em>.
 	Some parameters can be set in <em>kefirbb.properties</em> or <em>kefirbb.properties.xml</em>
-	standard properties files.
+	&mdash; standard properties files.
 </p>
 
 <p>
-	Condifguration from resource.
+	Configuration from resource.
 </p>
 <pre class="sh_java">
 TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("my/package/config.xml");
@@ -169,7 +169,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 </pre>
 
 <p>
-	Proprammer can get programmatic configuration from XMl with factory
+	A proprammer can get programmatic configuration from XMl with factory
 	<code>org.kefirsf.bb.ConfigurationFactory</code>.
 </p>
 
@@ -181,7 +181,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 	The root tag is <code>configuration</code>. The tag <code>configuration</code> hasn't any attributes.
 </p>
 <p>
-	The simple configuration example. This configuration define text transformation for escaping XML symbols
+	The simple configuration example. This configuration defines text transformation for escaping XML symbols
 	from text.
 </p>
 <pre class="sh_xml">
@@ -214,10 +214,10 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 
 <h4>Codes</h4>
 <p>
-	Code is main entity. Code defines simple translation.
+	A code is the main entity. A code defines simple translation.
 </p>
 <p>
-	Code can be defined with tag <code>code</code>. The tag has two mandatory tags:
+	A code can be defined with the tag <code>code</code>. The tag has two mandatory tags:
 </p>
 <ul>
 	<li><code>pattern</code> &mdash; defines the text search pattern;</li>
@@ -234,7 +234,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 <p>
 	The tag <code>pattern</code> can contains text and tags: <code>var</code>, <code>constant</code>, <code>junk</code>.
 	The text processor finds text framents corresponding the pattern.
-	Also there is an attribute <code>ignoreCase</code> for create pattern case insensitive.
+	Also there is an attribute <code>ignoreCase</code> for create the pattern case insensitive.
 </p>
 
 <p>
@@ -256,7 +256,7 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
         <code>inherit</code> &mdash; inherit scope of the parent code, by default "false";
     </li>
     <li>
-        <code>transparent</code> &mdash; if true, variable value will be accessible from others codes,
+        <code>transparent</code> &mdash; if true, the variable value will be accessible from others codes,
         by default "false", it's needed for attributes of tags.
     </li>
 </ul>
@@ -289,8 +289,8 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 
 <h4>Scopes</h4>
 <p>
-	Scopes define which code will be used for text fragment processing.
-	By default there is one scope with name "ROOT". If root scope is not defined in configuration
+	Scopes define which codes will be used for text fragment processing.
+	By default there is one scope with name "ROOT". If the root scope is not defined in configuration
 	it will be created and all codes from the tag <code>configuration</code> will be put in.
 	It is handy for simple configurations with one scope.
 </p>
@@ -334,12 +334,12 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 </pre>
 <p>
 	Parameters can be set in files <em>kefirbb.properties</em> or <em>kefirbb.properties.xml</em>
-	in the root of <em>classpath</em>. This files has standard format defined in <code>java.util.Properties</code>.
+	in the root of <em>classpath</em>. This files has a standard format defined in <code>java.util.Properties</code>.
 </p>
 
 <h4>Prefix and suffix</h4>
 <p>
-	Preficx and suffix are add in begin and end of the transalted text.
+	The prefix and the suffix are add in the begin and in the end of the translated text.
 	Tags <code>prefix</code> and <code>suffix</code> like tag <code>template</code>.
 </p>
 <pre class="sh_xml">
@@ -387,6 +387,6 @@ assert "[KefirBB]".equals(processor.process("val"));
 </pre>
 
 <hr/>
-<p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefir@perm.ru">kefir@perm.ru</a></p>
+<p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefirfromperm@gmail.com">kefirfromperm@gmail.com</a></p>
 </body>
 </html>
