@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta charset="UTF-8"/>
+    <title>KefirBB, руководство пользователя, версия 1.0</title>
+	<link type="text/css" rel="stylesheet" href="../main.css">
+	<link type="text/css" rel="stylesheet" href="../shjs/css/sh_typical.min.css">
+	<script type="text/javascript" src="../shjs/sh_main.min.js"></script>
+	<script type="text/javascript" src="../shjs/lang/sh_java.min.js"></script>
+	<script type="text/javascript" src="../shjs/lang/sh_xml.min.js"></script>
+</head>
+<body onload="sh_highlightDocument();">
+<h1>Руководство пользователя KefirBB</h1>
+
+<p>Руководство пользователя KefirBB, версия 1.2, русский язык.</p>
+
+<h2>Введение</h2>
+
+<p>
+    KefirBB &mdash; это Java-библиотека для преобразования текста между различными форматами.
+    Изначально KefirBB разрабатывалась для преобразования BB-кодов в HTML. Однако гибкие возможности
+    конфигурирования позволили использовать её и для других преобразований. Например, для преобразования
+    XML в HTML или для фильтрации HTML-тэгов.
+</p>
+
+<h2>Новое в версии 1.2</h2>
+
+<ul>
+    <li>Полная поддержка Textile от <a href="https://txstyle.org">TxStyle</a>.</li>
+    <li>Частичная поддержка Markdown от <a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a>.</li>
+    <li>Тэги для URL-адресов и Email: &lt;url/&gt;, &lt;email/&gt; &mdash; соответственно.</li>
+    <li>Условный тэг для шаблонов.</li>
+</ul>
+
+<h2>Новое в версии 1.1</h2>
+
+<ul>
+    <li>Добавлены тэги паттерна начала строки, конца строки и пу4стой строки:
+        &lt;bol/&gt;, &lt;eol/&gt;, &lt;blankline/&gt; &mdash; соответственно.</li>
+    <li>В паттерне можно указывать тэги-призраки (ghost). Если парсер увстречает такой тэг, позиция курсора не меняется.</li>
+    <li>Добавлены действия для переменных.</li>
+    <li>Можно указывать несколько паттернов в одном коде.</li>
+</ul>
+
+<h2>Новое в версии 1.0</h2>
+
+<ul>
+	<li>Изменены названия пакетов на <code>org.kefirsf.bb</code>.</li>
+	<li>Добавлена возможность не учитывать регистр при создании кодов.</li>
+	<li>Значительно увеличена производительность.</li>
+	<li>Добалено ограничение на максимальную вложенность кодов для предотвращения <code>java.lang.StackOverflowError</code></li>
+    <li>Конфигурация для фильтрации HTML.</li>
+</ul>
+
+<h2>Начало работы</h2>
+
+<p>
+	Для начала, Вам нужно подключить библиотеку <em>kefirbb</em> к вашему проекту. Для Maven-проектов достаточно
+	прописать зависимость.
+</p>
+
+<pre class="sh_xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.kefirsf&lt;/groupId&gt;
+    &lt;artifactId&gt;kefirbb&lt;/artifactId&gt;
+    &lt;version&gt;1.2&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
+<p>
+	Для остальных проектов достаточно скачать <em>kefirbb-1.2.jar</em> и проследить, чтобы он был добавлен
+	в <em>classpath</em> приложения.
+</p>
+
+<p>
+	Преобразованием текста занимаются объекты, реализующие интерфейс <code>org.kefirsf.bb.TextProcessor</code>.
+</p>
+
+<pre class="sh_java">
+public interface TextProcessor {
+    public CharSequence process(CharSequence source);
+    public String process(String source);
+    public StringBuilder process(StringBuilder source);
+    public StringBuffer process(StringBuffer source);
+}
+</pre>
+
+<p>
+	Как видно, интерфейс содержит несколько простых методов, которые получают на вход текст в объектах различных типов,
+	преобразовывают его, а затем возращают преобразованный текст в объекте того же типа.
+</p>
+<p>
+	Чтобы получить стандартный <code>TextProcessor</code> для преобразования BB-кодов в HTML, нужно воспользоваться
+	фабрикой <code>org.kefirsf.bb.BBProcessorFactory</code>.
+</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance().create();
+</pre>
+<p>
+    Теперь мы можем использовать его для преобразования нашего текста.
+</p>
+<pre class="sh_java">
+assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("[b]text[/b]"));
+</pre>
+<p>
+    Объект <code>processor</code> является потокобезопасным. Это означает, что его можно использовать
+    в нескольких потоках одновременно.
+</p>
+
+<h2>Дополнительные возможности</h2>
+<p>
+	Библиотека KefirBB имеет очень гибкую конфигурацию, которая позволяет использовать её не только для преобразования
+	BB-кодов в HTML, но и для других преобразований текста. Например, для фильтрации HTML, введенного пользователем или
+	для исключения специальных символов. Пользовтель, так же, может создать свою конфигурацию, практически для любого
+	преобразования текста.
+</p>
+
+<h3>Фильтрация HTML</h3>
+<p>
+	В составе библиотеки KefirBB содержится конфигурация для фильтрации HTML. Фильтрацию HTML необходимо применять
+	над текстами, введенными пользователем, для предотвращения XSS-атак, а так же во избежание проблем с версткой.
+</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance()
+    .createFromResource(ConfigurationFactory.SAFE_HTML_CONFIGURATION_FILE);
+assert "&lt;b&gt;text&lt;/b&gt;".equals(processor.process("&lt;b onclick=\"alert('Attack!');\"&gt;text&lt;/b&gt;"));
+</pre>
+
+<h3>Textile</h3>
+<p>
+    KefirBB полностью поддерживает язык разметки Textile. Описание конфигурации можно найти по адресу
+    <a href="https://txstyle.org">TxStyle</a>.
+</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance()
+    .createFromResource(ConfigurationFactory.TEXTILE_CONFIGURATION_FILE);
+assert "&lt;p&gt;&lt;b&gt;text&lt;/b&gt;&lt;/p&gt;".equals(processor.process("**text**"));
+</pre>
+
+<h3>Markdown</h3>
+<p>
+    В версию 1.2 включена частичная поддержка языка разметки Markdown. Описание синтаксиса можно найти на странице
+    <a href="https://daringfireball.net/projects/markdown/syntax">Markdown Syntax</a>. Текущая реализация не
+    поддерживает в полной мере списки и цитирование.
+</p>
+<pre class="sh_java">
+    TextProcessor processor = BBProcessorFactory.getInstance()
+        .createFromResource(ConfigurationFactory.MARKDOWN_CONFIGURATION_FILE);
+    assert "&lt;p&gt;&lt;strong&gt;text&lt;/strong&gt;&lt;/p&gt;".equals(processor.process("**text**"));
+</pre>
+
+<h3>Исключение специальных последовательностей</h3>
+<p>
+	Часто встает задача исключения специальных последовательностей символов из текста и замены их другими последовательностями.
+	Для этой цели, библиотека KefirBB содержит специальный класс <code>org.kefirsf.bb.EscapeProcessor</code>.
+	Класс содержит конструктор, на вход которому подается массив последовательностей для исключения и замены.
+</p>
+<pre class="sh_java">
+TextProcessor processor = new EscapeProcessor(
+    new String[][]{
+        {"a", "4"},
+        {"e", "3"},
+        {"l", "1"},
+        {"o", "0"}
+    }
+);
+assert "4bcd3fghijk1mn0pqrstuvwxyz".equals(processor.process("abcdefghijklmnopqrstuvwxyz"));
+</pre>
+
+<h3>Исключение специальных символов XML</h3>
+<p>
+	Исключение специальных символов XML может понадобиться для вставки произвольного текста в XML или HTML
+	документ. Эта задач появлется достаточно регулярно, поэтому библиотека KefirBB содержит специальную фабрику,
+	которая строит объект <code>org.kefirsf.bb.EscapeProcessor</code>, сконфигурированный для исключения
+	специальных символов XML.
+</p>
+<pre class="sh_java">
+TextProcessor processor = EscapeXmlProcessorFactory.getInstance().create();
+assert "&amp;lt;escape tag&amp;gt;".equals(processor.process("&lt;escape tag&gt;"));
+</pre>
+
+<h3>Конфигурация пользователя</h3>
+<p>
+	Программист может создать свою собственную конфигурацию процессора для своих специфических нужд.
+	Конфигурация может быть задана декларативно в XML файле или программно.
+	Существует несколько способов использовать свою конфигурацию.
+</p>
+
+<p>
+	Первый способ &mdash; это назвать файл конфигурации <em>kefirbb.xml</em> и поместить его в корень в 
+	<em>classpath</em>. После чего, воспользоваться стандартной фабрикой.
+</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance().create();
+</pre>
+<p>
+	Фабрика сначала ищет конфигурацию по пути <em>classpath*:kefirbb.xml</em> и только если не находит, 
+	получает стандартную конфигурацию по пути <em>classpath*:org/kefirsf/bb/default.xml</em>.
+	Отдельные параметры конфигурации могут быть вынесены в файлы <em>kefirbb.properties</em> и 
+	<em>kefirbb.properties.xml</em>, имеющие стандартный синтаксис <code>Properties</code>.
+</p>
+
+<p>
+	Однако, первый способ не может удовлетворить все потребности. Иногда требуется использовать несколько конфигураций
+	или нет возможности разместить файл конфигурации в корне <em>classpath</em>. В этом случае можно использовать
+	загрузку конфигурации из ресурсов.
+</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance().createFromResource("my/package/config.xml");
+</pre>
+
+<p>
+	Можно получить конфигурацию из файла одним из двух способов.
+</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance().create("config.xml");
+</pre>
+<p>или</p>
+<pre class="sh_java">
+TextProcessor processor = BBProcessorFactory.getInstance().create(new File("config.xml"));
+</pre>
+
+<p>
+	Можно использовать конфигурацию, созданную программно.
+</p>
+<pre class="sh_java">
+Configuration configuration  = new Configuration();
+...
+TextProcessor processor = BBProcessorFactory.getInstance().create(configuration);
+</pre>
+
+<p>
+	Программную конфигурацию можно получить из XML-конфигурации при помощи фабрики
+	<code>org.kefirsf.bb.ConfigurationFactory</code>.
+</p>
+
+<h2>Конфигурация</h2>
+<h3>Декларативная конфигурация</h3>
+<p>
+    Файл конфигурации &mdash; это XML-файл описывающий преобразование текста. Постоянный адрес схемы в Интернет
+    <a href="http://kefirsf.org/kefirbb/schema/kefirbb-1.2.xsd">http://kefirsf.org/kefirbb/schema/kefirbb-1.2.xsd</a>.
+    В качестве корневого должен быть использован тэг <code>configuration</code> без аттрибутов.
+</p>
+<p>
+    Пример простой конфигурации для процессора, фильтрующего спецсимволы XML:
+</p>
+<pre class="sh_xml">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="http://kefirsf.org/kefirbb/schema"
+               xsi:schemaLocation="http://kefirsf.org/kefirbb/schema http://kefirsf.org/kefirbb/schema/kefirbb-1.2.xsd"&gt;
+    &lt;code&gt;
+        &lt;pattern&gt;&amp;amp;&lt;/pattern&gt;
+        &lt;template&gt;&amp;amp;amp;&lt;/template&gt;
+    &lt;/code&gt;
+    &lt;code&gt;
+        &lt;pattern&gt;&amp;apos;&lt;/pattern&gt;
+        &lt;template&gt;&amp;amp;apos;&lt;/template&gt;
+    &lt;/code&gt;
+    &lt;code&gt;
+        &lt;pattern&gt;&amp;lt;&lt;/pattern&gt;
+        &lt;template&gt;&amp;amp;lt;&lt;/template&gt;
+    &lt;/code&gt;
+    &lt;code&gt;
+        &lt;pattern&gt;&amp;gt;&lt;/pattern&gt;
+        &lt;template&gt;&amp;amp;gt;&lt;/template&gt;
+    &lt;/code&gt;
+    &lt;code&gt;
+        &lt;pattern&gt;&amp;quot;&lt;/pattern&gt;
+        &lt;template&gt;&amp;amp;quot;&lt;/template&gt;
+    &lt;/code&gt;
+&lt;/configuration&gt;
+</pre>
+
+<h4>Коды</h4>
+<p>
+    Код &mdash; это основная единица преобразования текста. Именно код определяет какой фрагмент текста должен быть преобразован
+    и как он должен быть преобразован.
+</p>
+<p>
+    Код определяется при помощи тэга <code>code</code>. Внутри которого обязательны 2 тэга:
+</p>
+<ul>
+	<li>
+        <code>pattern</code> &mdash; образец по которому находится фрагмент текста, который должен быть обработан,
+        начиная с версии 1.1, паттернов может быть несколько в одном коде;</li>
+	<li><code>template</code> &mdash; шаблон для генерации нового текста.</li>
+</ul>
+<p>
+    Так же у тэга <code>code</code> определены 2 аттрибута:
+</p>
+<ul>
+	<li><code>name</code> &mdash; название кода;</li>
+	<li><code>priority</code> &mdash; приоритет кода (чем больше тем выше приоритет, по умолчанию "0").</li>
+</ul>
+<p>Пример тэга <code>code</code>:</p>
+<pre class="sh_xml">
+&lt;code name="bold"&gt;
+    &lt;pattern ignoreCase="true"&gt;[b]&lt;var inherit="true"/&gt;[/b]&lt;/pattern&gt;
+    &lt;template&gt;&amp;lt;b&amp;gt;&lt;var/&gt;&amp;lt;/b&amp;gt;&lt;/template&gt;
+&lt;/code&gt;
+</pre>
+<p>
+    Тэг <code>code</code> может быть определен непосредственно внутри тэга <code>configuration</code>
+    или внутри тэга <code>scope</code>.
+</p>
+
+<h5>Паттерны</h5>
+<p>
+    Тэг <code>pattern</code> может содержать текст и тэги: <code>var</code>, <code>constant</code>, <code>junk</code>,
+    <code>bol</code>, <code>eol</code>, <code>blankline</code>, <code>url</code>, <code>email</code>. Во время
+    обработки, процессор ищет фрагменты текста соответствующие тексту и константам в тэге <code>pattern</code> кода.
+	Для тэга <code>pattern</code> можно так же указать атрибут <code>ignoreCase</code>, типа <code>boolean</code>.
+	Если значение атрибута <code>ignoreCase</code> "true", сравнение текста с образцом не будет зависеть от регистра.
+</p>
+
+<p>
+	Тэг <code>var</code> введен для определения переменных значений и имеет следующие атрибуты:
+</p>
+<ul>
+    <li><code>name</code> &mdash; название переменной, по умолчанию "variable";</li>
+    <li>
+        <code>parse</code> &mdash; флаг указывающий на то, требуется ли обработка текста переменной,
+        по умолчанию "true";</li>
+    <li>
+        <code>regex</code> &mdash; регулярное выражение, которому должна удовлетворять переменная,
+        используется только если <code>parse=false</code>;
+    </li>
+    <li>
+        <code>scope</code> &mdash; определяет область видимости, которая будет использована для обработки
+        текста переменной, используется только если <code>parse=true</code>, по умолчанию "ROOT";
+    </li>
+    <li>
+        <code>inherit</code> &mdash; определяет что нужно унаследовать область видимости от внешнего кода,
+        по умолчанию "false";
+    </li>
+    <li>
+        <code>transparent</code> &mdash; определяет что переменная должна быть видна внешнему коду,
+        по умолчанию "false", введен для обработки атрибутов;
+    </li>
+    <li>
+        <code>action</code> &mdash; действие, которую нужно проделать с переменной:
+        <ul>
+            <li><code>rewrite</code> &mdash; переписывает значение переменной, поведение по умолчанию;</li>
+            <li><code>append</code> &mdash; добавляет к уже имеющемуся значению переменной новое значение;</li>
+            <li><code>check</code> &mdash; проверяет что текущее значение переменной совпадает с тем что в тексте.</li>
+        </ul>
+    </li>
+    <li><code>ghost</code> &mdash; указывает на то что позицию курсора менять не нужно.</li>
+</ul>
+
+<p>
+	Тэг <code>constant</code> используется для обозначения константных значений в тэге <code>pattern</code>.
+	Имеет следующие атрибуты:
+</p>
+<ul>
+	<li><code>value</code> &mdash; значение константы;</li>
+	<li><code>ignoreCase</code> &mdash; указывает на необходимость игнорировать регистр символов.</li>
+    <li><code>ghost</code> &mdash; указывает на то что позицию курсора менять не нужно.</li>
+</ul>
+
+<p>
+    Тэг <code>junk</code> игнорирует все символы в исходном тексте до терминатора.
+</p>
+
+<p>
+    Тэг <code>bol</code> служит индикатором начала строки. Многие языки разметки, опираются на начало строки,
+    поэтому он и был введен. Следует учесть, что при обработке тэга <code>bol</code> текщая позиция не изменяется и
+    курсор по прежнему будет находиться на начале строки. поэтому нельзя после тэга <code>bol</code> ставить тэг
+    <code>var</code> с область видимости, включающей это же код. Это приведет к появлению бесконечного цикла.
+</p>
+
+<p>
+    Тэг <code>eol</code> &mdash; конец строки. Обрабатывает символы конца строки, независимо от системы, в которой они
+    были поставлены.
+    Имеет следующие аттрибуты:
+</p>
+<ul>
+    <li><code>ghost</code> &mdash; указывает на то что позицию курсора менять не нужно.</li>
+</ul>
+
+<p>
+    Тэг <code>blankline</code> &mdash; пустая строка.
+    Имеет следующие аттрибуты:
+</p>
+<ul>
+    <li><code>ghost</code> &mdash; указывает на то что позицию курсора менять не нужно.</li>
+</ul>
+
+<p>
+    Тэг <code>url</code> испольуется для обозначения URL-адресов.
+</p>
+<ul>
+    <li><code>name</code> &mdash; название переменной, в которую будет помещен URL-адрес, по умолчанию "url";</li>
+    <li><code>local</code> &mdash; позволяет использовать локальные адреса;</li>
+    <li><code>schemaless</code> &mdash; позволяет использовать адреса без указания схемы, в этом случае все адреса будут HTTP;</li>
+    <li><code>ghost</code> &mdash; указывает на то что позицию курсора менять не нужно.</li>
+</ul>
+
+<p>
+    Тэг <code>email</code> &mdash; парсит email-адреса.
+</p>
+<ul>
+    <li><code>name</code> &mdash; название переменной, в которую будет помещен email-адрес, по умолчанию "email";</li>
+    <li><code>ghost</code> &mdash; указывает на то что позицию курсора менять не нужно.</li>
+</ul>
+
+<h5>Шаблоны</h5>
+<p>
+    Тэг <code>template</code> может содержать текст и тэги <code>var</code> и <code>if</code>.
+</p>
+<p>
+    Тэг <code>var</code> может иметь атрибут <code>name</code>, по умолчанию "variable", чтобы определить, значение
+    какой именно переменной подставить в текст.
+</p>
+<p>
+    Условный тэг <code>if</code> содержит аттрибут <code>name</code> и проверяет, была ли ранее проинициализирована
+    переменная с данным именем. Если переменная с данным именем действительно была проинициализирована в данном коде,
+    то в результирующий текст попадет содержимое тэга <code>if</code>. В противном случае &mdash; нет.
+</p>
+
+<h4>Область видимости</h4>
+<p>
+    Область видимости определяет какие коды могут быть использованы для обработки фрагмента текста.
+    По умолчанию, используется область видимости с именем "ROOT". Даже если она не определена
+    в конфигурации то она все равно будет создана и в нее будут включены все коды определенные
+    в тэге <code>configuration</code> но не в тэгах <code>scope</code>. Это удобно &mdash; для
+    простых конфигурация с небольшим количеством кодов разработчик может вовсе не заботиться об областях видимости.
+</p>
+<p>
+    Область видимости определяется при помощи тэга <code>scope</code>, который может находиться внутри тэга
+    <code>configuration</code>. Для тэга <code>scope</code> определны следующие атрибуты:
+</p>
+<ul>
+    <li><code>name</code> &mdash; название области видимости;</li>
+    <li><code>parent</code> &mdash; область видимости из которой будут унаследованы все коды;</li>
+    <li>
+        <code>ignoreText</code> &mdash; означает что при обработке текста в этой области видимости нужно
+        игнорировать весь текст, который не относится ни к одному из допустимых внутри этой области видимости кодов.
+    </li>
+</ul>
+<p>
+    Внутри тэга <code>scope</code> допустимы тэги:
+</p>
+<ul>
+	<li><code>code</code> &mdash; для определения кода (см. выше);</li>
+	<li>
+		<code>coderef</code> &mdash; для ссылки на код, определенный вне тэга <code>scope</code>. У тэга
+		<code>coderef</code> определен один атрибут <code>name</code>, который должен совпадать с именем кода.
+	</li>
+</ul>
+
+<h4>Параметры</h4>
+<p>
+    Параметры &mdash; это заранее определенные переменные, которые могут быть использованы при генерации текста в кодах,
+    префиксе и суффиксе. Параметры определяются внутри тэга <code>params</code> при помощи тэгов <code>param</code>,
+    у которых есть 2 атрибута:
+</p>
+<ul>
+	<li><code>name</code> &mdash; название переменной;</li>
+	<li><code>value</code> &mdash; значение.</li>
+</ul>
+<p>
+	Например:
+</p>
+<pre class="sh_xml">
+&lt;params&gt;
+    &lt;param name="music" value="Punk"/&gt;
+&lt;/params&gt;
+</pre>
+<p>
+    Так же параметры могут быть заданы в отдельном файле <em>kefirbb.properties</em> или
+    <em>kefirbb.properties.xml</em> в <em>classpath</em>. Форматы файлов определены в классе
+    <code>java.util.Properties</code>.
+</p>
+
+<h4>Префикс и суффикс</h4>
+<p>
+    Префикс и суффикс добавляются в начале и конце обрабатываемого текста соответственно. Определяются при помощи тэгов
+    <code>prefix</code> и <code>suffix</code>, аналогично тэгу <code>template</code>.
+</p>
+<pre class="sh_xml">
+&lt;prefix&gt;&amp;lt;!-- bbcodes begin --&amp;gt;&lt;/prefix&gt;
+&lt;suffix&gt;&amp;lt;!-- bbcodes end --&amp;gt;&lt;/suffix&gt;
+</pre>
+
+<h3>Программная конфигурация</h3>
+<p>
+    Программная кофигурация задается классом <code>org.kefirsf.bb.conf.Configuration</code>. Пример:
+</p>
+<pre class="sh_java">
+// Create configuration
+Configuration cfg = new Configuration();
+
+// Set the prefix and suffix
+cfg.setPrefix(new Template(Arrays.asList(new Constant("["))));
+cfg.setSuffix(new Template(Arrays.asList(new Constant("]"))));
+
+// Configure default scope
+Scope scope = new Scope(Scope.ROOT);
+
+// Create code and add it to scope
+Code code = new Code();
+code.setPattern(new Pattern(Arrays.asList(new Constant("val"))));
+code.setTemplate(new Template(Arrays.asList(new NamedValue("value"))));
+
+Set&lt;Code&gt; codes = new HashSet&lt;Code&gt;();
+codes.add(code);
+scope.setCodes(codes);
+
+// Set scope to configuration
+cfg.setRootScope(scope);
+
+// Set the parameter
+Map&lt;String, Object&gt; params = new HashMap&lt;String, Object&gt;();
+params.putAll(cfg.getParams());
+params.put("value", "KefirBB");
+cfg.setParams(params);
+
+// Test the configuration
+TextProcessor processor = BBProcessorFactory.getInstance().create(cfg);
+assert "[KefirBB]".equals(processor.process("val"));
+</pre>
+
+<hr/>
+<p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefirfromperm@gmail.com">kefirfromperm@gmail.com</a></p>
+</body>
+</html>
