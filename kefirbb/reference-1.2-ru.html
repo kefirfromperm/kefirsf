@@ -29,16 +29,22 @@
 <ul>
     <li>Полная поддержка Textile от <a href="https://txstyle.org">TxStyle</a>.</li>
     <li>Частичная поддержка Markdown от <a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a>.</li>
-    <li>Тэги для URL-адресов и Email: &lt;url/&gt;, &lt;email/&gt; &mdash; соответственно.</li>
+    <li>
+        Тэги для URL-адресов и Email: <code>&lt;url/&gt;</code>, <code>&lt;email/&gt;</code> &mdash; соответственно.
+    </li>
     <li>Условный тэг для шаблонов.</li>
 </ul>
 
 <h2>Новое в версии 1.1</h2>
 
 <ul>
-    <li>Добавлены тэги паттерна начала строки, конца строки и пу4стой строки:
-        &lt;bol/&gt;, &lt;eol/&gt;, &lt;blankline/&gt; &mdash; соответственно.</li>
-    <li>В паттерне можно указывать тэги-призраки (ghost). Если парсер увстречает такой тэг, позиция курсора не меняется.</li>
+    <li>
+        Добавлены тэги паттерна начала строки, конца строки и пустой строки:
+        <code>&lt;bol/&gt;</code>, <code>&lt;eol/&gt;</code>, <code>&lt;blankline/&gt;</code> &mdash; соответственно.
+    </li>
+    <li>
+        В паттерне можно указывать тэги-призраки (ghost). Если парсер увстречает такой тэг, позиция курсора не меняется.
+    </li>
     <li>Добавлены действия для переменных.</li>
     <li>Можно указывать несколько паттернов в одном коде.</li>
 </ul>
@@ -49,7 +55,10 @@
 	<li>Изменены названия пакетов на <code>org.kefirsf.bb</code>.</li>
 	<li>Добавлена возможность не учитывать регистр при создании кодов.</li>
 	<li>Значительно увеличена производительность.</li>
-	<li>Добалено ограничение на максимальную вложенность кодов для предотвращения <code>java.lang.StackOverflowError</code></li>
+	<li>
+        Добалено ограничение на максимальную вложенность кодов для предотвращения
+        <code>java.lang.StackOverflowError</code>
+    </li>
     <li>Конфигурация для фильтрации HTML.</li>
 </ul>
 
@@ -430,7 +439,9 @@ TextProcessor processor = BBProcessorFactory.getInstance().create(configuration)
 <p>
     Условный тэг <code>if</code> содержит аттрибут <code>name</code> и проверяет, была ли ранее проинициализирована
     переменная с данным именем. Если переменная с данным именем действительно была проинициализирована в данном коде,
-    то в результирующий текст попадет содержимое тэга <code>if</code>. В противном случае &mdash; нет.
+    то в результирующий текст попадет содержимое тэга <code>if</code>. В противном случае &mdash; нет. Тэг
+    <code>if</code>, так же как и тэг <code>template</code> может содержать текст, тэги <code>var</code> и
+    <code>if</code>.
 </p>
 
 <h4>Область видимости</h4>
@@ -549,6 +560,6 @@ assert "[KefirBB]".equals(processor.process("val"));
 </pre>
 
 <hr/>
-<p>&copy; 2013 Kefir Software Foundation <a href="mailto:kefirfromperm@gmail.com">kefirfromperm@gmail.com</a></p>
+<p>&copy; 2016 Kefir Software Foundation <a href="mailto:kefirfromperm@gmail.com">kefirfromperm@gmail.com</a></p>
 </body>
 </html>
